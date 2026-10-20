@@ -1,0 +1,9 @@
+# Entorno virtual y cachés
+.venv/
+__pycache__/
+.ipynb_checkpoints/
+.pytest_cache/
+.DS_Store
+
+# Datos de Waymo: licencia no comercial, no redistribuible. No subir a git.
+data/raw/**/*.parquet
