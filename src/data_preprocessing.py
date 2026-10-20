@@ -8,6 +8,7 @@ from __future__ import annotations
 import logging
 from pathlib import Path
 
+import numpy as np
 import pandas as pd
 
 logger = logging.getLogger(__name__)
@@ -163,4 +164,26 @@ def agregar_nombre_tipo(df: pd.DataFrame) -> pd.DataFrame:
         raise ValueError("El DataFrame no tiene la columna 'type'")
     df = df.copy()
     df["type_nombre"] = df["type"].map(NOMBRES_TIPO)
+    return df
+
+
+def agregar_distancia_vehiculo(df: pd.DataFrame) -> pd.DataFrame:
+    """Agrega ``distancia_vehiculo``: distancia euclidiana (m) entre el vehículo y el objeto.
+
+    Las cajas de ``lidar_box`` están expresadas en el sistema de referencia del vehículo,
+    por lo que la distancia al vehículo es la norma del centro de la caja.
+
+    Args:
+        df: DataFrame con columnas ``box_center_x``, ``box_center_y`` y ``box_center_z``.
+
+    Returns:
+        Una copia del DataFrame con la columna ``distancia_vehiculo``.
+
+    Raises:
+        ValueError: si faltan las columnas del centro de la caja.
+    """
+    columnas = ["box_center_x", "box_center_y", "box_center_z"]
+    validar_columnas(df, columnas)
+    df = df.copy()
+    df["distancia_vehiculo"] = np.sqrt((df[columnas] ** 2).sum(axis=1))
     return df
